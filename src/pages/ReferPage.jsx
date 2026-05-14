@@ -56,6 +56,27 @@ const ReferPage = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+  const handleInvite = async () => {
+  const shareData = {
+    title: "Join Sattiyas",
+    text: "Join Sattiyas and get exclusive studio rewards using my referral code SATTIYAS500",
+    url: window.location.origin,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      navigator.clipboard.writeText(
+        `${shareData.text} ${shareData.url}`
+      );
+
+      alert("Referral link copied!");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
     <div
@@ -82,8 +103,8 @@ const ReferPage = () => {
             </h1>
           </motion.div>
 
-          <button
-            onClick={() => navigate("/products")}
+         <button
+            onClick={handleInvite}
             className="w-fit flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border-b-2 border-black pb-1 hover:opacity-50 transition-all"
           >
             Invite Friends <Plus size={14} />

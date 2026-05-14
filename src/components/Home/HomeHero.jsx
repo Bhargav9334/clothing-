@@ -88,11 +88,16 @@ const HomeHero = () => {
         >
           {/* Parallax Image */}
           <motion.img
-            src={slides[index].image}
-            alt=""
-            style={{ x, y }}
-            className="w-full h-full object-cover scale-110"
-          />
+  src={slides[index].image}
+  alt={slides[index].title}
+  style={{ x, y }}
+  className="
+    w-full h-full
+    object-cover md:object-cover
+    object-[75%_center] md:object-center
+    scale-100 md:scale-110
+  "
+/>
 
           {/* Gradient */}
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent" />

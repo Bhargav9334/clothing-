@@ -11,6 +11,7 @@ import {
   Gift,
   Minus,
   Plus,
+  Tag,
 } from "lucide-react";
 
 const CheckoutPage = () => {
@@ -26,6 +27,10 @@ const CheckoutPage = () => {
 
   const [donation, setDonation] =
     useState(false);
+    // COUPON STATES
+const [couponCode, setCouponCode] = useState("");
+const [appliedCoupon, setAppliedCoupon] = useState(null);
+const [couponMessage, setCouponMessage] = useState("");
 
   // UNIQUE PRODUCTS
   const uniqueCart = [
@@ -73,17 +78,73 @@ const CheckoutPage = () => {
     },
     0
   );
+ // APPLY COUPON
+const applyCoupon = () => {
+  const code = couponCode.trim().toUpperCase();
 
+  const coupons = {
+    SAVE10: {
+      type: "percentage",
+      value: 10,
+      message: "10% discount applied successfully!",
+    },
+    WELCOME20: {
+      type: "percentage",
+      value: 20,
+      message: "20% welcome discount applied!",
+    },
+    FLAT500: {
+      type: "flat",
+      value: 500,
+      message: "₹500 flat discount applied!",
+    },
+    LUXURY15: {
+      type: "percentage",
+      value: 15,
+      message: "15% luxury discount applied!",
+    },
+  };
+
+  if (coupons[code]) {
+    setAppliedCoupon(coupons[code]);
+    setCouponMessage(coupons[code].message);
+  } else {
+    setAppliedCoupon(null);
+    setCouponMessage("Invalid coupon code.");
+  }
+};
+
+// REMOVE COUPON
+const removeCoupon = () => {
+  setCouponCode("");
+  setAppliedCoupon(null);
+  setCouponMessage("");
+};
   const giftCharge = giftWrap ? 199 : 0;
 
   const donationCharge = donation
     ? 49
     : 0;
+const baseTotal =
+  subtotal + giftCharge + donationCharge;
 
-  const grandTotal =
-    subtotal +
-    giftCharge +
-    donationCharge;
+let discount = 0;
+
+if (appliedCoupon) {
+  if (appliedCoupon.type === "percentage") {
+    discount = Math.round(
+      (baseTotal * appliedCoupon.value) / 100
+    );
+  } else if (appliedCoupon.type === "flat") {
+    discount = appliedCoupon.value;
+  }
+}
+
+if (discount > baseTotal) {
+  discount = baseTotal;
+}
+
+const grandTotal = baseTotal - discount;
 
   // EMPTY CART
   if (cart.length === 0) {
@@ -562,6 +623,78 @@ const CheckoutPage = () => {
                   </span>
                 </div>
               </motion.div>
+              {/* COUPON SECTION */}
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  whileHover={{ y: -2 }}
+  className="mb-8 border border-black/10 rounded-[2rem] p-5 bg-white/60 shadow-sm"
+>
+  <div className="flex items-center gap-4 mb-5">
+    {/* Icon */}
+    <div className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center">
+      <Tag size={18} />
+    </div>
+
+    {/* Text */}
+    <div>
+      <p className="text-[10px] font-black uppercase tracking-widest">
+        Apply Coupon
+      </p>
+      <p className="text-[9px] opacity-60 mt-1">
+        SAVE10 • WELCOME20 • FLAT500 • LUXURY15
+      </p>
+    </div>
+  </div>
+
+  {/* Input + Button */}
+  <div className="flex flex-col sm:flex-row gap-3">
+    <input
+      type="text"
+      value={couponCode}
+      onChange={(e) =>
+        setCouponCode(
+          e.target.value.toUpperCase()
+        )
+      }
+      placeholder="Enter coupon code"
+      className="flex-1 px-5 py-4 rounded-full border border-black/10 bg-white text-[10px] font-black uppercase tracking-widest outline-none"
+    />
+
+   {appliedCoupon ? (
+  <motion.button
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={removeCoupon}
+    className="px-7 py-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[9px] font-black uppercase tracking-widest shadow-lg"
+  >
+    Remove
+  </motion.button>
+) : (
+  <motion.button
+    whileHover={{ scale: 1.03 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={applyCoupon}
+    className="px-7 py-4 rounded-full bg-black text-white text-[9px] font-black uppercase tracking-widest shadow-lg"
+  >
+    Apply
+  </motion.button>
+)}
+  </div>
+
+  {/* Success / Error Message */}
+  {couponMessage && (
+    <p
+      className={`mt-4 text-[9px] font-bold uppercase tracking-widest ${
+        appliedCoupon
+          ? "text-green-600"
+          : "text-red-500"
+      }`}
+    >
+      {couponMessage}
+    </p>
+  )}
+</motion.div>
 
               {/* TOTAL */}
               <div className="space-y-5 mb-8">

@@ -211,7 +211,7 @@ const {
           <div className="flex flex-col lg:flex-row gap-10">
 
             {/* LEFT SIDE */}
-            <div className="flex-1 space-y-5 max-h-[calc(100vh-120px)] overflow-y-auto pr-3 custom-scrollbar">
+            <div className="flex-1 space-y-5 max-h-[calc(100vh-120px)] overflow-y-auto overflow-x-hidden pr-3 custom-scrollbar">
 
               {uniqueCart.map((item, idx) => (
                 <motion.div
@@ -395,6 +395,7 @@ const {
               ))}
 
               {/* RECOMMENDED */}
+              <div className="overflow-hidden w-full">
 <motion.div
   animate={{
     x: ["0%", "-50%"],
@@ -443,7 +444,7 @@ const {
 {/* WISHLIST */}
 <motion.button
   whileTap={{
-    scale: 0.82,
+    scale: 0.85,
   }}
   whileHover={{
     scale: 1.08,
@@ -453,21 +454,21 @@ const {
     e.stopPropagation();
 
     const alreadyWishlisted =
-      wishlist?.some(
-        (wish) =>
-          wish.id === item.id
-      );
+  wishlist?.some(
+    (wish) =>
+      wish.id === item.id
+  );
 
-    if (alreadyWishlisted) {
-      removeFromWishlist(item.id);
-    } else {
-      addToWishlist({
-        ...item,
-        img:
-          item.image ||
-          item.img,
-      });
-    }
+if (alreadyWishlisted) {
+  removeFromWishlist(item.id);
+} else {
+  addToWishlist({
+    ...item,
+    img:
+      item.image ||
+      item.img,
+  });
+}
   }}
   className={`absolute top-4 right-4 z-[100] w-10 h-10 rounded-full backdrop-blur-xl flex items-center justify-center shadow-xl transition-all duration-500 cursor-pointer
   ${
@@ -475,7 +476,7 @@ const {
       (wish) =>
         wish.id === item.id
     )
-      ? "bg-black text-white opacity-100 scale-100"
+      ? "bg-black text-white opacity-100"
       : "bg-white/95 text-black opacity-0 group-hover:opacity-100 hover:bg-black hover:text-white"
   }`}
 >
@@ -565,6 +566,7 @@ const {
     )
   )}
 </motion.div>
+ </div>
  </div>
 
             {/* RIGHT SIDE */}
